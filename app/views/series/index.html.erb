@@ -47,38 +47,48 @@
   <% end %>
 
   <%# ── HISTORICAL ── %>
-  <% if @series.any? %>
+  <% if @series_by_day.any? %>
     <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col gap-4">
-      <div class="flex items-baseline justify-between">
-        <h2 class="text-lg font-bold">Historial</h2>
-        <span class="text-sm text-gray-500">Total: <span class="font-black text-gray-900 text-xl"><%= @total_reps %></span> reps</span>
-      </div>
+      <h2 class="text-lg font-bold">Historial</h2>
 
-      <ol class="flex flex-col gap-2">
-        <% @series.each_with_index do |serie, i| %>
-          <li class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
-            <div class="flex items-center gap-3">
-              <span class="w-7 h-7 rounded-full bg-gray-100 text-xs font-bold flex items-center justify-center text-gray-500">
-                <%= @series.size - i %>
-              </span>
-              <span class="text-2xl font-black"><%= serie.reps %></span>
-              <% if serie.mark.present? %>
-                <span class="<%= serie.mark == 'FALLO' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700' %> text-xs font-bold px-2 py-0.5 rounded-full">
-                  <%= serie.mark %>
-                </span>
-              <% end %>
+      <% global_index = @series_by_day.values.sum(&:length) %>
+      <% @series_by_day.each do |day, day_series| %>
+        <div class="flex flex-col gap-1">
+          <div class="flex items-baseline justify-between mt-2">
+            <div class="flex items-baseline gap-2">
+              <span class="font-bold text-gray-800"><%= I18n.l(day, format: "%A").capitalize %></span>
+              <span class="text-xs text-gray-400"><%= day.strftime("%d/%m/%Y") %></span>
             </div>
-            <div class="flex items-center gap-3">
-              <span class="text-xs text-gray-400"><%= serie.created_at.strftime("%H:%M") %></span>
-              <%= button_to serie_path(serie), method: :delete,
-                    class: "text-gray-300 hover:text-red-500 transition text-lg leading-none",
-                    form: { data: { turbo_confirm: "¿Eliminar esta serie?" } } do %>
-                ✕
-              <% end %>
-            </div>
-          </li>
-        <% end %>
-      </ol>
+            <span class="text-sm text-gray-500"><span class="font-black text-gray-900"><%= day_series.sum(&:reps) %></span> reps</span>
+          </div>
+          <ol class="flex flex-col">
+            <% day_series.each do |serie| %>
+              <li class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                <div class="flex items-center gap-3">
+                  <span class="w-7 h-7 rounded-full bg-gray-100 text-xs font-bold flex items-center justify-center text-gray-500">
+                    <%= global_index %>
+                  </span>
+                  <span class="text-2xl font-black"><%= serie.reps %></span>
+                  <% if serie.mark.present? %>
+                    <span class="<%= serie.mark == 'FALLO' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700' %> text-xs font-bold px-2 py-0.5 rounded-full">
+                      <%= serie.mark %>
+                    </span>
+                  <% end %>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="text-xs text-gray-400"><%= serie.created_at.strftime("%H:%M") %></span>
+                  <%= button_to serie_path(serie), method: :delete,
+                        class: "text-gray-300 hover:text-red-500 transition text-lg leading-none",
+                        form: { data: { turbo_confirm: "¿Eliminar esta serie?" } } do %>
+                    ✕
+                  <% end %>
+                </div>
+              </li>
+              <% global_index -= 1 %>
+            <% end %>
+          </ol>
+        </div>
+      <% end %>
     </div>
   <% end %>
 

@@ -1,7 +1,6 @@
 class SeriesController < ApplicationController
   def index
-    @series = Serie.order(created_at: :desc)
-    @total_reps = @series.sum(:reps)
+    @series_by_day = Serie.order(created_at: :desc).group_by { |s| s.created_at.to_date }
   end
 
   def create
@@ -9,8 +8,7 @@ class SeriesController < ApplicationController
     if @serie.save
       redirect_to series_path
     else
-      @series = Serie.order(created_at: :desc)
-      @total_reps = @series.sum(:reps)
+      @series_by_day = Serie.order(created_at: :desc).group_by { |s| s.created_at.to_date }
       render :index, status: :unprocessable_entity
     end
   end

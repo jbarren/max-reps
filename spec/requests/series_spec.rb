@@ -17,7 +17,7 @@ RSpec.describe "Series", type: :request do
       expect(response.body).to include("FALLO")
     end
 
-    it "shows total reps" do
+    it "shows total reps per day" do
       create(:serie, reps: 10)
       create(:serie, reps: 5)
 
@@ -29,6 +29,19 @@ RSpec.describe "Series", type: :request do
     it "renders the form when there are no series" do
       get series_path
       expect(response.body).to include("Nueva serie")
+    end
+
+    it "groups series by day with day-of-week header" do
+      today = Date.today
+      yesterday = Date.today - 1
+
+      create(:serie, reps: 5, created_at: today.to_time)
+      create(:serie, reps: 3, created_at: yesterday.to_time)
+
+      get series_path
+
+      expect(response.body).to include(today.strftime("%d/%m/%Y"))
+      expect(response.body).to include(yesterday.strftime("%d/%m/%Y"))
     end
   end
 
