@@ -1,3 +1,19 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <circle cx="256" cy="256" r="256" fill="#111827"/>
+
+  <!-- Bar (center) -->
+  <rect x="152" y="232" width="208" height="48" rx="12" fill="white"/>
+
+  <!-- Left collar -->
+  <rect x="120" y="208" width="48" height="96" rx="10" fill="white"/>
+
+  <!-- Left weight plates -->
+  <rect x="80" y="172" width="48" height="168" rx="12" fill="white"/>
+
+  <!-- Right collar -->
+  <rect x="344" y="208" width="48" height="96" rx="10" fill="white"/>
+
+  <!-- Right weight plates -->
+  <rect x="384" y="172" width="48" height="168" rx="12" fill="white"/>
 </svg>
