@@ -28,6 +28,7 @@ services:
       DATABASE_URL: postgres://max_reps:password@db:5432/max_reps_development
       RAILS_ENV: development
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
+      DB_HOST: db
     depends_on:
       db:
         condition: service_healthy
