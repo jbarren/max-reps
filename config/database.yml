@@ -62,7 +62,7 @@ production:
     <<: *default
     database: max_reps_production
     username: max_reps
-    password: <%= ENV["MAX_REPS_DATABASE_PASSWORD"] %>
+    password: <%= ENV["POSTGRES_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: max_reps_production_cache
