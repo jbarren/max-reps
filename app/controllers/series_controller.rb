@@ -3,6 +3,17 @@ class SeriesController < ApplicationController
     @series_by_day = Serie.order(created_at: :desc).group_by { |s| s.created_at.to_date }
   end
 
+  def weekly
+    series = Serie.order(created_at: :asc)
+    @weeks = series
+      .group_by { |s| s.created_at.to_date.beginning_of_week(:monday) }
+      .map do |week_start, week_series|
+        days = (0..6).map { |i| week_series.select { |s| s.created_at.to_date == week_start + i.days }.sum(&:reps) }
+        { start: week_start, end: week_start + 6.days, total: week_series.sum(&:reps), days: days }
+      end
+      .reverse
+  end
+
   def create
     @serie = Serie.new(serie_params)
     if @serie.save

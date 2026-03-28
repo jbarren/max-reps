@@ -1,5 +1,9 @@
 <div class="w-full max-w-md mx-auto flex flex-col gap-8">
 
+  <div class="flex justify-end">
+    <%= link_to "Historial semanal →", weekly_series_path, class: "px-4 py-2 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-700 transition" %>
+  </div>
+
   <%# ── COUNTER FORM ── %>
   <%= form_with model: Serie.new, url: series_path,
         data: { controller: "reps", turbo: false } do |f| %>
