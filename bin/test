@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -e
+
+docker compose run --rm \
+  -e RAILS_ENV=test \
+  -e DATABASE_URL=postgres://max_reps:password@db:5432/max_reps_test \
+  web bundle exec rspec "$@"

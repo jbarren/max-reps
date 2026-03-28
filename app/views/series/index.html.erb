@@ -1,0 +1,85 @@
+<div class="w-full max-w-md mx-auto flex flex-col gap-8">
+
+  <%# ── COUNTER FORM ── %>
+  <%= form_with model: Serie.new, url: series_path,
+        data: { controller: "reps", turbo: false } do |f| %>
+
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col gap-6">
+      <h1 class="text-2xl font-bold text-center tracking-tight">Nueva serie</h1>
+
+      <%# Counter display %>
+      <div class="flex items-center justify-center gap-4">
+        <button type="button" class="w-14 h-14 rounded-full bg-gray-100 text-2xl font-bold hover:bg-gray-200 active:scale-95 transition"
+                data-action="click->reps#decrement" data-reps-amount-param="5">−5</button>
+        <button type="button" class="w-14 h-14 rounded-full bg-gray-100 text-2xl font-bold hover:bg-gray-200 active:scale-95 transition"
+                data-action="click->reps#decrement" data-reps-amount-param="1">−1</button>
+
+        <span class="w-24 text-center text-7xl font-black tabular-nums" data-reps-target="count">0</span>
+
+        <button type="button" class="w-14 h-14 rounded-full bg-gray-100 text-2xl font-bold hover:bg-gray-200 active:scale-95 transition"
+                data-action="click->reps#increment" data-reps-amount-param="1">+1</button>
+        <button type="button" class="w-14 h-14 rounded-full bg-gray-100 text-2xl font-bold hover:bg-gray-200 active:scale-95 transition"
+                data-action="click->reps#increment" data-reps-amount-param="5">+5</button>
+      </div>
+
+      <%= f.hidden_field :reps, value: 0, data: { reps_target: "input" } %>
+
+      <%# Mark selector %>
+      <div class="flex gap-3 justify-center">
+        <label class="flex items-center gap-2 cursor-pointer">
+          <%= f.radio_button :mark, "", checked: true, class: "hidden peer" %>
+          <span class="px-4 py-2 rounded-full border-2 border-gray-200 text-sm font-semibold peer-checked:border-gray-700 peer-checked:bg-gray-700 peer-checked:text-white transition select-none">Normal</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <%= f.radio_button :mark, "FALLO", class: "hidden peer" %>
+          <span class="px-4 py-2 rounded-full border-2 border-red-300 text-sm font-semibold peer-checked:border-red-600 peer-checked:bg-red-600 peer-checked:text-white transition select-none">FALLO</span>
+        </label>
+        <label class="flex items-center gap-2 cursor-pointer">
+          <%= f.radio_button :mark, "GOMA", class: "hidden peer" %>
+          <span class="px-4 py-2 rounded-full border-2 border-yellow-300 text-sm font-semibold peer-checked:border-yellow-500 peer-checked:bg-yellow-500 peer-checked:text-white transition select-none">GOMA</span>
+        </label>
+      </div>
+
+      <%# Submit %>
+      <%= f.submit "Guardar serie",
+            class: "w-full py-3 rounded-xl bg-gray-900 text-white font-bold text-lg hover:bg-gray-700 active:scale-95 transition cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <%# ── HISTORICAL ── %>
+  <% if @series.any? %>
+    <div class="bg-white rounded-2xl shadow-lg p-6 flex flex-col gap-4">
+      <div class="flex items-baseline justify-between">
+        <h2 class="text-lg font-bold">Historial</h2>
+        <span class="text-sm text-gray-500">Total: <span class="font-black text-gray-900 text-xl"><%= @total_reps %></span> reps</span>
+      </div>
+
+      <ol class="flex flex-col gap-2">
+        <% @series.each_with_index do |serie, i| %>
+          <li class="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-full bg-gray-100 text-xs font-bold flex items-center justify-center text-gray-500">
+                <%= @series.size - i %>
+              </span>
+              <span class="text-2xl font-black"><%= serie.reps %></span>
+              <% if serie.mark.present? %>
+                <span class="<%= serie.mark == 'FALLO' ? 'bg-red-100 text-red-700' : 'bg-yellow-100 text-yellow-700' %> text-xs font-bold px-2 py-0.5 rounded-full">
+                  <%= serie.mark %>
+                </span>
+              <% end %>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs text-gray-400"><%= serie.created_at.strftime("%H:%M") %></span>
+              <%= button_to serie_path(serie), method: :delete,
+                    class: "text-gray-300 hover:text-red-500 transition text-lg leading-none",
+                    form: { data: { turbo_confirm: "¿Eliminar esta serie?" } } do %>
+                ✕
+              <% end %>
+            </div>
+          </li>
+        <% end %>
+      </ol>
+    </div>
+  <% end %>
+
+</div>
